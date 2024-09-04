@@ -1,5 +1,9 @@
 <script setup>
 import { reactive } from 'vue';
+// importando os compenetes
+import Cabecalho from './components/Cabecalho.vue';
+import Formulario from './components/Formulario.vue';
+import ListaDeTarefas from './components/ListaDeTarefas.vue';
 
   const estado = reactive({
     filtro: 'todas',
@@ -58,41 +62,15 @@ import { reactive } from 'vue';
 
 <template>
   <div class="container">
-    <header class="p-5 mb-4 bg-light rounded-3">
-      <h1>Minhas Tarefas</h1>
-      <p>
-        Você possui {{getTarefasPendentes().length}} tarefas pendentes
-      </p>
-    </header>
-    <!-- o .prevent e a mesma coisa que usar o e.preventDefault() em uma function -->
-    <form @submit.prevent="cadastraTarefa">
-      <div class="row">
-        <div class="col">
-          <input :value="estado.tarefaTemp" @change="evento => estado.tarefaTemp = evento.target.value" required type="text" placeholder="Digite aqui a descrição da tarefa." class="form-control">
-        </div>
-        <div class="col-md-2">
-          <button type="submit" class="btn btn-primary">Cadastrar</button>
-        </div>
-        <div class="col-md-2">
-          <select @change="evento => estado.filtro = evento.target.value" class="form-control">
-            <option value="todas">Todas tarefas</option>
-            <option value="pendentes">Pendentes</option>
-            <option value="finalizadas">Finalizadas</option>
-          </select>
-        </div>
-      </div>
-    </form>
-    <ul class="list-group mt-4">
-      <li class="list-group-item" v-for="tarefa in getTarefasFiltradas()">
-        <input type="checkbox" :checked="tarefa.finalizada" :id="tarefa.titulo" @change="evento => tarefa.finalizada = evento.target.checked">
-        <label :for="tarefa.titulo" class="ms-3" :class="{done: tarefa.finalizada}"> {{tarefa.titulo}} </label>
-      </li>
-    </ul>
+    <!-- Utilizando os compenentes -->
+    <!-- 
+      em Cabecalho -  tarefas-pendentes é uma funcao criada dentro do compenente,
+      onde podemos passar a funcao getTarefasPendentes que esta no App.vue
+     -->
+     <Cabecalho :tarefas-pendentes="getTarefasPendentes().length" />
+     <Formulario :troca-filtro="evento => estado.filtro = evento.target.value" :tarefa-temp="estado.tarefaTemp" :edita-tarefa-tempo="evento => estado.tarefaTemp = evento.target.value" :cadastra-tarefa="cadastraTarefa"/>
+     <ListaDeTarefas :tarefas="getTarefasFiltradas()"/>
   </div>
 </template>
 
-<style scoped>
-  .done {
-    text-decoration: line-through;
-  }
-</style>
+
